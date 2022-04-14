@@ -1,0 +1,76 @@
+.logo2 {
+    /* padding: auto; */
+    height: 500px;
+    width: 700px;
+}
+
+.avantajele-tale-container {
+    width: 90%;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 50px;
+    background-color: #fefefe;
+}
+
+.avantajele-tale {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin: 30px 50px 100px 50px;
+    padding: 5px;
+}
+
+.element {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 50px;
+}
+
+.photo {
+    height: 100px;
+    width: 100px;
+}
+
+.faq {
+    width: 90%;
+    margin: auto;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 50px;
+}
+
+.first-part-content {
+    width: 100%;
+    margin: auto;
+    justify-content: center;
+    background-image: url(../img/bg-home.jpg);
+    background-repeat: 'no-repeat';
+}
+
+.motto {
+    margin-top: 7px;
+}
+
+mark.red {
+    color: #ff0000;
+    background: none;
+}
+
+.descopera-button {
+    margin: 100px;
+    padding-bottom: 100px;
+}
+
+.welcome-message {
+    width: 80%;
+    margin: auto;
+    justify-content: center;
+
+}
