@@ -98,7 +98,7 @@ const Home = () => {
                             color="error"
                             onClick={() => {
                                 if (initialized && keycloak?.authenticated) {
-                                    navigate("/courses")
+                                    navigate("/askforhelp")
                                 } else {
                                     handleClickOpen()
                                 }
@@ -145,7 +145,7 @@ const Home = () => {
 
 
                         <div className="element">
-                            <img className='photo' src={shelter} alt="Learning Wiki" />
+                            <img className='photo' src={shelter} alt="Share with Ukraine" />
 
                             <Typography
                                 color="textPrimary"
@@ -165,7 +165,7 @@ const Home = () => {
 
 
                         <div className="element">
-                            <img className='photo' src={food} alt="Learning Wiki" />
+                            <img className='photo' src={food} alt="Share with Ukraine" />
 
                             <Typography
                                 color="textPrimary"
@@ -185,7 +185,7 @@ const Home = () => {
 
 
                         <div className="element">
-                            <img className='photo' src={transport} alt="Learning Wiki" />
+                            <img className='photo' src={transport} alt="Share with Ukraine" />
 
                             <Typography
                                 color="textPrimary"
