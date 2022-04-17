@@ -1,0 +1,24 @@
+docker network create keycloak-network
+
+
+docker run -d --name postgres-kc \
+--net keycloak-network \
+-p 5432:5432 \
+-e POSTGRES_DB=ShareWithUkraine-Keycloak \
+-e POSTGRES_USER=keycloak \
+-e POSTGRES_PASSWORD=Steaua2014 postgres
+
+
+docker run -d --name keycloak \
+--net keycloak-network \
+-p 8080:8080 \
+-e KEYCLOAK_USER=admin \
+-e KEYCLOAK_PASSWORD=admin \
+-e DB_PORT=5432 \
+-e DB_DATABASE=ShareWithUkraine-Keycloak \
+-e DB_USER=keycloak \
+-e DB_PASSWORD=Steaua2014 \
+jboss/keycloak
+
+
+docker run -e KEYCLOAK_USER=<USERNAME> -e KEYCLOAK_PASSWORD=<PASSWORD> jboss/keycloak
