@@ -16,3 +16,9 @@ build-frontend:
 
 publish-frontend: build-frontend
 	docker push $(DOCKER_IMAGE_REGISTRY):$(FRONTEND_IMAGE_TAG)
+
+serve-dashboard:
+	kubectl proxy
+
+get-token:
+	kubectl -n kubernetes-dashboard get secret $(kubectl -n kubernetes-dashboard get sa/admin-user -o jsonpath="{.secrets[0].name}") -o go-template="{{.data.token | base64decode}}"
