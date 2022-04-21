@@ -5,10 +5,13 @@ import java.util.Properties
 import scala.collection.JavaConverters._
 import org.apache.kafka.clients.consumer.KafkaConsumer
 
+/**
+ * Consumer for the topic. Contains methods to process the messages.
+ */
 object KafkaConsumer {
   val props: Properties = new Properties()
-  props.put("group.id", "email-sender")
-  props.put("bootstrap.servers","localhost:9092")
+  props.put("group.id", Config.KAFKA_CONSUMER_GROUP)
+  props.put("bootstrap.servers",Config.KAFKA_BOOTSTRAP_SERVERS)
   props.put("key.deserializer",
     "org.apache.kafka.common.serialization.StringDeserializer")
   props.put("value.deserializer",
@@ -17,8 +20,12 @@ object KafkaConsumer {
   props.put("auto.commit.interval.ms", "1000")
 
   val consumer = new KafkaConsumer(props)
-  val topics = List("email-tasks")
+  val topics = List(Config.KAFKA_TOPIC_NAME)
 
+  /**
+   * Executes the task for each message consumed.
+   * @param task - instructions about what to do with the mail to be sent
+   */
   def forEach(task: EmailTask => Unit): Unit = try {
     consumer.subscribe(topics.asJava)
     while (true) {
