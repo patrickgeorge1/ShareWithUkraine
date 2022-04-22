@@ -1,0 +1,5 @@
+KafkaStreamedEmailSender/.idea
+KafkaStreamedEmailSender/target
+Util commands.txt
+.DS_Store
+KafkaStreamedEmailSender/.gitignore
