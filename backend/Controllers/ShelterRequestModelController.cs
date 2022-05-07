@@ -18,19 +18,19 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GoodsRequestModelController : ControllerBase
+    public class ShelterRequestModelController : ControllerBase
     {
         private readonly IUserModelService _userService;
-        private readonly IGoodsRequestModelService _goodsRequestService;
-        public GoodsRequestModelController(IUserModelService userService, IGoodsRequestModelService goodsRequestService)
+        private readonly IShelterRequestModelService _ShelterRequestService;
+        public ShelterRequestModelController(IUserModelService userService, IShelterRequestModelService ShelterRequestService)
         {
             _userService = userService;
-            _goodsRequestService = goodsRequestService;
+            _ShelterRequestService = ShelterRequestService;
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<List<GoodsRequestModel>>> GetGoodsRequests()
+        public async Task<ActionResult<List<ShelterRequestModel>>> GetShelterRequests()
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
             var userExists = await _userService.GetByUsername(username);
@@ -44,12 +44,12 @@ namespace Backend.Controllers
                 };
                 await _userService.Add(userModel);
             }
-            return await _goodsRequestService.GetAll();
+            return await _ShelterRequestService.GetAll();
         }
 
         [HttpGet("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<GoodsRequestModel>> GetGoodsRequestById(int id)
+        public async Task<ActionResult<ShelterRequestModel>> GetShelterRequestById(int id)
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
             var userExists = await _userService.GetByUsername(username);
@@ -63,13 +63,13 @@ namespace Backend.Controllers
                 };
                 await _userService.Add(userModel);
             }
-            return await _goodsRequestService.Get(id);
+            return await _ShelterRequestService.Get(id);
         }
 
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<GoodsRequestModel>> PostGoodsRequest()
+        public async Task<ActionResult<ShelterRequestModel>> PostShelterRequest()
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
             var request = HttpContext.Request;
@@ -96,16 +96,16 @@ namespace Backend.Controllers
             {
                 request.Body.Position = 0;
             }
-            var goodsRequestModel = JsonSerializer.Deserialize<GoodsRequestModel>(requestBodyString);
+            var ShelterRequestModel = JsonSerializer.Deserialize<ShelterRequestModel>(requestBodyString);
 
-            await _goodsRequestService.Add(goodsRequestModel);
-            return goodsRequestModel;
+            await _ShelterRequestService.Add(ShelterRequestModel);
+            return ShelterRequestModel;
         }
 
 
         [HttpDelete("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<GoodsRequestModel>> DeleteGoodsRequest(int id)
+        public async Task<ActionResult<ShelterRequestModel>> DeleteShelterRequest(int id)
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
             var userExists = await _userService.GetByUsername(username);
@@ -119,8 +119,8 @@ namespace Backend.Controllers
                 };
                 await _userService.Add(userModel);
             }
-            var request = await _goodsRequestService.Get(id);
-            await _goodsRequestService.Delete(id);
+            var request = await _ShelterRequestService.Get(id);
+            await _ShelterRequestService.Delete(id);
             return request;
         }
     }

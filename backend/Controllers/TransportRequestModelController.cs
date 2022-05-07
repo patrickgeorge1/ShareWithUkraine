@@ -18,19 +18,19 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GoodsRequestModelController : ControllerBase
+    public class TransportRequestModelController : ControllerBase
     {
         private readonly IUserModelService _userService;
-        private readonly IGoodsRequestModelService _goodsRequestService;
-        public GoodsRequestModelController(IUserModelService userService, IGoodsRequestModelService goodsRequestService)
+        private readonly ITransportRequestModelService _TransportRequestService;
+        public TransportRequestModelController(IUserModelService userService, ITransportRequestModelService TransportRequestService)
         {
             _userService = userService;
-            _goodsRequestService = goodsRequestService;
+            _TransportRequestService = TransportRequestService;
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<List<GoodsRequestModel>>> GetGoodsRequests()
+        public async Task<ActionResult<List<TransportRequestModel>>> GetTransportRequests()
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
             var userExists = await _userService.GetByUsername(username);
@@ -44,12 +44,12 @@ namespace Backend.Controllers
                 };
                 await _userService.Add(userModel);
             }
-            return await _goodsRequestService.GetAll();
+            return await _TransportRequestService.GetAll();
         }
 
         [HttpGet("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<GoodsRequestModel>> GetGoodsRequestById(int id)
+        public async Task<ActionResult<TransportRequestModel>> GetTransportRequestById(int id)
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
             var userExists = await _userService.GetByUsername(username);
@@ -63,13 +63,13 @@ namespace Backend.Controllers
                 };
                 await _userService.Add(userModel);
             }
-            return await _goodsRequestService.Get(id);
+            return await _TransportRequestService.Get(id);
         }
 
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<GoodsRequestModel>> PostGoodsRequest()
+        public async Task<ActionResult<TransportRequestModel>> PostTransportRequest()
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
             var request = HttpContext.Request;
@@ -96,16 +96,16 @@ namespace Backend.Controllers
             {
                 request.Body.Position = 0;
             }
-            var goodsRequestModel = JsonSerializer.Deserialize<GoodsRequestModel>(requestBodyString);
+            var TransportRequestModel = JsonSerializer.Deserialize<TransportRequestModel>(requestBodyString);
 
-            await _goodsRequestService.Add(goodsRequestModel);
-            return goodsRequestModel;
+            await _TransportRequestService.Add(TransportRequestModel);
+            return TransportRequestModel;
         }
 
 
         [HttpDelete("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<GoodsRequestModel>> DeleteGoodsRequest(int id)
+        public async Task<ActionResult<TransportRequestModel>> DeleteTransportRequest(int id)
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
             var userExists = await _userService.GetByUsername(username);
@@ -119,8 +119,8 @@ namespace Backend.Controllers
                 };
                 await _userService.Add(userModel);
             }
-            var request = await _goodsRequestService.Get(id);
-            await _goodsRequestService.Delete(id);
+            var request = await _TransportRequestService.Get(id);
+            await _TransportRequestService.Delete(id);
             return request;
         }
     }

@@ -29,6 +29,11 @@ namespace backend.Data.Services
             return 0;
         }
 
+        public async Task<T> Get(int id)
+        {
+            return await _repo.Get(id); 
+        }
+
         public Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> whereCondition)
         {
             throw new NotImplementedException();
