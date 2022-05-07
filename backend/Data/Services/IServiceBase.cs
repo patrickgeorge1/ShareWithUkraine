@@ -8,6 +8,12 @@ namespace backend.Data.Services
     public interface IServiceBase<T>
     {
         /// <summary>
+        /// Get selected entity by ID
+        /// </summary>
+        /// <param name="id">Primary key ID</param>
+        Task<T> Get(int id);
+
+        /// <summary>
         /// Get a selected extiry by the object primary key ID
         /// </summary>
         /// <param name="id">Primary key ID</param>
