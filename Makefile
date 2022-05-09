@@ -1,4 +1,7 @@
 DOCKER_IMAGE_REGISTRY := patrickgeorge1/share-with-ukraine
+DOCKER_IMAGE_REGISTRY_BACKEND := patrickgeorge1/share-with-ukraine-backend
+DOCKER_IMAGE_REGISTRY_FRONTEND := patrickgeorge1/share-with-ukraine-frontend
+DOCKER_IMAGE_REGISTRY_MAILSENDER := patrickgeorge1/share-with-ukraine-mailsender
 
 GIT_BRANCH := $(shell git rev-parse --abbrev-ref HEAD)
 GIT_COMMIT_NUMBER := $(shell git rev-list --count HEAD | xargs printf %05d)
@@ -13,16 +16,16 @@ build-keycloak:
 	docker build keycloak-17.0.1/Docker --tag keycloak-custom-image
 
 build-frontend:
-	docker build frontend/ --tag $(DOCKER_IMAGE_REGISTRY):$(FRONTEND_IMAGE_TAG)
+	docker build frontend/ --tag $(DOCKER_IMAGE_REGISTRY_FRONTEND):$(FRONTEND_IMAGE_TAG)
 
 build-mail-sender:
-	docker build -f ./KafkaStreamedEmailSender/docker/Dockerfile . --tag $(DOCKER_IMAGE_REGISTRY):$(KAFKA_MAIL_SENDER)
+	docker build -f ./KafkaStreamedEmailSender/docker/Dockerfile . --tag $(DOCKER_IMAGE_REGISTRY_MAILSENDER):$(KAFKA_MAIL_SENDER)
 
 publish-frontend: build-frontend
-	docker push $(DOCKER_IMAGE_REGISTRY):$(FRONTEND_IMAGE_TAG)
+	docker push $(DOCKER_IMAGE_REGISTRY_FRONTEND):$(FRONTEND_IMAGE_TAG)
 
 publish-mail-sender: build-mail-sender
-	docker push $(DOCKER_IMAGE_REGISTRY):$(KAFKA_MAIL_SENDER)
+	docker push $(DOCKER_IMAGE_REGISTRY_MAILSENDER):$(KAFKA_MAIL_SENDER)
 
 serve-dashboard:
 	kubectl proxy
