@@ -5,4 +5,6 @@ Util commands.txt
 KafkaStreamedEmailSender/.gitignore
 
 backend/.vs/
+backend/bin/Debug
+backend/obj/Debug
 keycloak-17.0.1/data/tmp/kc-gzip-cache/kiy6k/
