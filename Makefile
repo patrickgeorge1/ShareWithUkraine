@@ -10,6 +10,7 @@ BUILD_TIMESTAMP := $(shell date +'%Y%m%d%H%M%S')
 DOCKER_IMAGE_TAG := $(GIT_BRANCH)-$(GIT_COMMIT_NUMBER)-$(GIT_COMMIT_HASH)-$(BUILD_TIMESTAMP)
 
 FRONTEND_IMAGE_TAG := frontend-$(DOCKER_IMAGE_TAG)
+BACKEND_IMAGE_TAG := backend-$(DOCKER_IMAGE_TAG)
 KAFKA_MAIL_SENDER := kafka-mail-sender-$(DOCKER_IMAGE_TAG)
 
 build-keycloak:
@@ -17,6 +18,9 @@ build-keycloak:
 
 build-frontend:
 	docker build frontend/ --tag $(DOCKER_IMAGE_REGISTRY_FRONTEND):$(FRONTEND_IMAGE_TAG)
+
+build-backend:
+	docker build backend/ --tag $(DOCKER_IMAGE_REGISTRY_BACKEND):$(BACKEND_IMAGE_TAG)
 
 build-mail-sender:
 	docker build -f ./KafkaStreamedEmailSender/docker/Dockerfile . --tag $(DOCKER_IMAGE_REGISTRY_MAILSENDER):$(KAFKA_MAIL_SENDER)
@@ -26,6 +30,9 @@ publish-frontend: build-frontend
 
 publish-mail-sender: build-mail-sender
 	docker push $(DOCKER_IMAGE_REGISTRY_MAILSENDER):$(KAFKA_MAIL_SENDER)
+
+publish-backend: build-backend
+	docker push $(DOCKER_IMAGE_REGISTRY_BACKEND):$(BACKEND_IMAGE_TAG)
 
 serve-dashboard:
 	kubectl proxy
