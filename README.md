@@ -11,6 +11,9 @@ Figma: https://www.figma.com/file/8eKsoJQhJTCMgPkIlueRvh/Proiect?node-id=0%3A1
         cd KafkaCluster
         docker stack deploy --compose-file docker-compose.yml kafka
 
+- Create database ShareWithUkraine-Keycloak if not present (using pgAdmin4)
+
+
 - Run Keycloak
 
         cd keycloak-17.0.1
