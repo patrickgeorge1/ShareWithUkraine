@@ -5,6 +5,6 @@ namespace backend.Data.Services
 {
     public interface IUserModelService : IServiceBase<UserModel>
     {
-        Task<bool> GetByUsername(string username);
+        Task<int> GetByUsername(string username);
     }
 }

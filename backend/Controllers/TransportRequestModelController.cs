@@ -21,11 +21,11 @@ namespace Backend.Controllers
     public class TransportRequestModelController : ControllerBase
     {
         private readonly IUserModelService _userService;
-        private readonly ITransportRequestModelService _TransportRequestService;
-        public TransportRequestModelController(IUserModelService userService, ITransportRequestModelService TransportRequestService)
+        private readonly ITransportRequestModelService _transportRequestService;
+        public TransportRequestModelController(IUserModelService userService, ITransportRequestModelService transportRequestService)
         {
             _userService = userService;
-            _TransportRequestService = TransportRequestService;
+            _transportRequestService = transportRequestService;
         }
 
         [HttpGet]
@@ -34,7 +34,7 @@ namespace Backend.Controllers
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
             var userExists = await _userService.GetByUsername(username);
-            if (!userExists)
+            if (userExists == -1)
             {
                 UserModel userModel = new()
                 {
@@ -44,7 +44,7 @@ namespace Backend.Controllers
                 };
                 await _userService.Add(userModel);
             }
-            return await _TransportRequestService.GetAll();
+            return await _transportRequestService.GetAll();
         }
 
         [HttpGet("{id:int}")]
@@ -53,7 +53,7 @@ namespace Backend.Controllers
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
             var userExists = await _userService.GetByUsername(username);
-            if (!userExists)
+            if (userExists == -1)
             {
                 UserModel userModel = new()
                 {
@@ -63,18 +63,17 @@ namespace Backend.Controllers
                 };
                 await _userService.Add(userModel);
             }
-            return await _TransportRequestService.Get(id);
+            return await _transportRequestService.Get(id);
         }
 
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<TransportRequestModel>> PostTransportRequest()
+        public async Task<ActionResult<TransportRequestModel>> PostGoodsRequest([FromBody] TransportRequestModel transportRequestModel)
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
-            var request = HttpContext.Request;
-            var userExists = await _userService.GetByUsername(username);
-            if (!userExists)
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
             {
                 UserModel userModel = new()
                 {
@@ -84,32 +83,18 @@ namespace Backend.Controllers
                 };
                 await _userService.Add(userModel);
             }
-            string requestBodyString;
-            try
-            {
-                request.EnableBuffering();
-                var buffer = new byte[Convert.ToInt32(request.ContentLength)];
-                await request.Body.ReadAsync(buffer, 0, buffer.Length);
-                requestBodyString = Encoding.UTF8.GetString(buffer);
-            }
-            finally
-            {
-                request.Body.Position = 0;
-            }
-            var TransportRequestModel = JsonSerializer.Deserialize<TransportRequestModel>(requestBodyString);
-
-            await _TransportRequestService.Add(TransportRequestModel);
-            return TransportRequestModel;
+            transportRequestModel.RefugeeId = userId;
+            return await _transportRequestService.Add(transportRequestModel);
         }
 
 
         [HttpDelete("{id:int}")]
         [Authorize]
-        public async Task<ActionResult<TransportRequestModel>> DeleteTransportRequest(int id)
+        public async Task<ActionResult<TransportRequestModel>> DeleteGoodsRequest(int id)
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
-            var userExists = await _userService.GetByUsername(username);
-            if (!userExists)
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
             {
                 UserModel userModel = new()
                 {
@@ -118,9 +103,10 @@ namespace Backend.Controllers
                     UserType = "labagiu"
                 };
                 await _userService.Add(userModel);
+                userId = await _userService.GetByUsername(username);
             }
-            var request = await _TransportRequestService.Get(id);
-            await _TransportRequestService.Delete(id);
+            var request = await _transportRequestService.Get(id);
+            await _transportRequestService.Delete(id);
             return request;
         }
     }

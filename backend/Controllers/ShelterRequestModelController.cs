@@ -21,20 +21,20 @@ namespace Backend.Controllers
     public class ShelterRequestModelController : ControllerBase
     {
         private readonly IUserModelService _userService;
-        private readonly IShelterRequestModelService _ShelterRequestService;
+        private readonly IShelterRequestModelService _shelterRequestService;
         public ShelterRequestModelController(IUserModelService userService, IShelterRequestModelService ShelterRequestService)
         {
             _userService = userService;
-            _ShelterRequestService = ShelterRequestService;
+            _shelterRequestService = ShelterRequestService;
         }
 
         [HttpGet]
         [Authorize]
-        public async Task<ActionResult<List<ShelterRequestModel>>> GetShelterRequests()
+        public async Task<ActionResult<List<ShelterRequestModel>>> GetshelterRequests()
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
-            var userExists = await _userService.GetByUsername(username);
-            if (!userExists)
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
             {
                 UserModel userModel = new()
                 {
@@ -43,8 +43,9 @@ namespace Backend.Controllers
                     UserType = "labagiu"
                 };
                 await _userService.Add(userModel);
+                userId = await _userService.GetByUsername(username);
             }
-            return await _ShelterRequestService.GetAll();
+            return await _shelterRequestService.GetAll();
         }
 
         [HttpGet("{id:int}")]
@@ -52,8 +53,8 @@ namespace Backend.Controllers
         public async Task<ActionResult<ShelterRequestModel>> GetShelterRequestById(int id)
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
-            var userExists = await _userService.GetByUsername(username);
-            if (!userExists)
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
             {
                 UserModel userModel = new()
                 {
@@ -63,18 +64,17 @@ namespace Backend.Controllers
                 };
                 await _userService.Add(userModel);
             }
-            return await _ShelterRequestService.Get(id);
+            return await _shelterRequestService.Get(id);
         }
 
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<ShelterRequestModel>> PostShelterRequest()
+        public async Task<ActionResult<ShelterRequestModel>> PostShelterRequest([FromBody] ShelterRequestModel ShelterRequestModel)
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
-            var request = HttpContext.Request;
-            var userExists = await _userService.GetByUsername(username);
-            if (!userExists)
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
             {
                 UserModel userModel = new()
                 {
@@ -84,32 +84,17 @@ namespace Backend.Controllers
                 };
                 await _userService.Add(userModel);
             }
-            string requestBodyString;
-            try
-            {
-                request.EnableBuffering();
-                var buffer = new byte[Convert.ToInt32(request.ContentLength)];
-                await request.Body.ReadAsync(buffer, 0, buffer.Length);
-                requestBodyString = Encoding.UTF8.GetString(buffer);
-            }
-            finally
-            {
-                request.Body.Position = 0;
-            }
-            var ShelterRequestModel = JsonSerializer.Deserialize<ShelterRequestModel>(requestBodyString);
-
-            await _ShelterRequestService.Add(ShelterRequestModel);
-            return ShelterRequestModel;
+            ShelterRequestModel.RefugeeId = userId;
+            return await _shelterRequestService.Add(ShelterRequestModel);
         }
-
 
         [HttpDelete("{id:int}")]
         [Authorize]
         public async Task<ActionResult<ShelterRequestModel>> DeleteShelterRequest(int id)
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
-            var userExists = await _userService.GetByUsername(username);
-            if (!userExists)
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
             {
                 UserModel userModel = new()
                 {
@@ -119,8 +104,8 @@ namespace Backend.Controllers
                 };
                 await _userService.Add(userModel);
             }
-            var request = await _ShelterRequestService.Get(id);
-            await _ShelterRequestService.Delete(id);
+            var request = await _shelterRequestService.Get(id);
+            await _shelterRequestService.Delete(id);
             return request;
         }
     }
