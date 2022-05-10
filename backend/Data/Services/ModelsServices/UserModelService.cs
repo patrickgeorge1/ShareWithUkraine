@@ -13,15 +13,15 @@ namespace backend.Data.Services
             : base(usersRepo)
         { }
 
-        public async Task<bool> GetByUsername(string username)
+        public async Task<int> GetByUsername(string username)
         {
             var users = await base.GetAll();
             foreach(var user in users)
             {
                 if (user.Username == username)
-                    return true;
+                    return user.Id;
             }
-            return false;
+            return -1;
         }
     }
 }

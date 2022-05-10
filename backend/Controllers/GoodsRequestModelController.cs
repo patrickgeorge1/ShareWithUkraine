@@ -33,8 +33,8 @@ namespace Backend.Controllers
         public async Task<ActionResult<List<GoodsRequestModel>>> GetGoodsRequests()
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
-            var userExists = await _userService.GetByUsername(username);
-            if (!userExists)
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
             {
                 UserModel userModel = new()
                 {
@@ -43,6 +43,7 @@ namespace Backend.Controllers
                     UserType = "labagiu"
                 };
                 await _userService.Add(userModel);
+                userId = await _userService.GetByUsername(username);
             }
             return await _goodsRequestService.GetAll();
         }
@@ -52,8 +53,8 @@ namespace Backend.Controllers
         public async Task<ActionResult<GoodsRequestModel>> GetGoodsRequestById(int id)
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
-            var userExists = await _userService.GetByUsername(username);
-            if (!userExists)
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
             {
                 UserModel userModel = new()
                 {
@@ -62,6 +63,7 @@ namespace Backend.Controllers
                     UserType = "labagiu"
                 };
                 await _userService.Add(userModel);
+                userId = await _userService.GetByUsername(username);
             }
             return await _goodsRequestService.Get(id);
         }
@@ -69,12 +71,11 @@ namespace Backend.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<GoodsRequestModel>> PostGoodsRequest()
+        public async Task<ActionResult<GoodsRequestModel>> PostGoodsRequest([FromBody] GoodsRequestModel goodsRequestModel)
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
-            var request = HttpContext.Request;
-            var userExists = await _userService.GetByUsername(username);
-            if (!userExists)
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
             {
                 UserModel userModel = new()
                 {
@@ -83,23 +84,10 @@ namespace Backend.Controllers
                     UserType = "labagiu"
                 };
                 await _userService.Add(userModel);
+                userId = await _userService.GetByUsername(username);
             }
-            string requestBodyString;
-            try
-            {
-                request.EnableBuffering();
-                var buffer = new byte[Convert.ToInt32(request.ContentLength)];
-                await request.Body.ReadAsync(buffer, 0, buffer.Length);
-                requestBodyString = Encoding.UTF8.GetString(buffer);
-            }
-            finally
-            {
-                request.Body.Position = 0;
-            }
-            var goodsRequestModel = JsonSerializer.Deserialize<GoodsRequestModel>(requestBodyString);
-
-            await _goodsRequestService.Add(goodsRequestModel);
-            return goodsRequestModel;
+            goodsRequestModel.RefugeeId = userId;
+            return await _goodsRequestService.Add(goodsRequestModel);
         }
 
 
@@ -108,8 +96,8 @@ namespace Backend.Controllers
         public async Task<ActionResult<GoodsRequestModel>> DeleteGoodsRequest(int id)
         {
             var username = HttpContext.User.FindFirst("preferred_username")?.Value;
-            var userExists = await _userService.GetByUsername(username);
-            if (!userExists)
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
             {
                 UserModel userModel = new()
                 {
@@ -118,6 +106,7 @@ namespace Backend.Controllers
                     UserType = "labagiu"
                 };
                 await _userService.Add(userModel);
+                userId = await _userService.GetByUsername(username);
             }
             var request = await _goodsRequestService.Get(id);
             await _goodsRequestService.Delete(id);
