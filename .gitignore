@@ -3,3 +3,4 @@ KafkaStreamedEmailSender/target
 Util commands.txt
 .DS_Store
 KafkaStreamedEmailSender/.gitignore
+backend/
