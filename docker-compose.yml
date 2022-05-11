@@ -1,5 +1,23 @@
 version: '3'
 services:
+  # backend:
+  #   image: patrickgeorge1/share-with-ukraine-backend:backend-ci-cd-00031-d8da65d-20220510225946
+  #   ports:
+  #     - "80:80"
+  #   environment:
+  #     # MAIL_USERNAME: 'ShareWithUkraine.mailsender@gmail.com'
+
+  frontend:
+    image: patrickgeorge1/share-with-ukraine-frontend:frontend-master-00001-f73c16c-20220511200443
+    # depends_on:
+    #   - backend
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_BACKEND_URL: 'http://localhost:5000/'
+      REACT_APP_KEYCLOAK_URL: 'http://localhost:8080/'
+
+
   mailsender:
     image: patrickgeorge1/share-with-ukraine-mailsender:kafka-mail-sender-ci-cd-00033-a44e76c-20220510002237
     environment:
@@ -9,6 +27,8 @@ services:
       KAFKA_CONSUMER_GROUP: email-sender
       KAFKA_BOOTSTRAP_SERVERS: broker:9092
       KAFKA_TOPIC_NAME: email-tasks
+
+
 networks:
   default:
     external:
