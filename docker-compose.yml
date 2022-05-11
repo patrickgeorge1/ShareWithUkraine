@@ -1,21 +1,22 @@
 version: '3'
 services:
-  backend:
-    image: patrickgeorge1/share-with-ukraine-backend:backend-ci-cd-00031-d8da65d-20220510225946
-    ports:
-      - "80:80"
-    environment:
-      # MAIL_USERNAME: 'ShareWithUkraine.mailsender@gmail.com'
+  # backend:
+  #   image: patrickgeorge1/share-with-ukraine-backend:backend-ci-cd-00031-d8da65d-20220510225946
+  #   ports:
+  #     - "80:80"
+  #   environment:
+  #     # MAIL_USERNAME: 'ShareWithUkraine.mailsender@gmail.com'
 
   frontend:
     image: patrickgeorge1/share-with-ukraine-frontend:frontend-master-00001-edf1ace-20220511183232
 
-    depends_on:
-      - backend
+    # depends_on:
+    #   - backend
     ports:
       - "3000:3000"
     environment:
-      # MAIL_USERNAME: 'ShareWithUkraine.mailsender@gmail.com'
+      REACT_APP_BACKEND_URL: 'http://localhost:5000/'
+      REACT_APP_KEYCLOAK_URL: 'http://localhost:8080/'
 
 
   mailsender:
