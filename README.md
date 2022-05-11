@@ -17,12 +17,14 @@ Figma: https://www.figma.com/file/8eKsoJQhJTCMgPkIlueRvh/Proiect?node-id=0%3A1
 
 - Create database ShareWithUkraine-Keycloak if not present (using pgAdmin4)
 
+- Change Keycloak configuration, keycloak-17.0.1/conf/keycloack.conf
 
 - Run Keycloak
 
         cd keycloak-17.0.1
-        .\bin\kc.bat build --db=postgres
-        .\bin\kc.bat start-dev
+        chmod 777 kc.sh
+        .\bin\kc.sh build --db=postgres
+        .\bin\kc.sh start-dev
 
 - Import Keycloack settings
 
