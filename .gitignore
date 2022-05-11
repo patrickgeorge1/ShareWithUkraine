@@ -8,3 +8,8 @@ backend/.vs/
 backend/bin/Debug
 backend/obj/Debug
 keycloak-17.0.1/data/tmp/kc-gzip-cache/kiy6k/
+
+backend/Backup/
+backend/Migrations/20220510201843_migration2.Designer.cs
+backend/Migrations/20220510201843_migration2.cs
+backend/UpgradeLog.htm
