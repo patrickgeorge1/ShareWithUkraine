@@ -6,6 +6,10 @@ Figma: https://www.figma.com/file/8eKsoJQhJTCMgPkIlueRvh/Proiect?node-id=0%3A1
 ## Setup base cluster { Kafka, Postgres, Keycloack}
 
 - Kill any proc running on port 5432
+- Create cluster network
+
+        docker network create -d overlay --attachable cluster_shared_network
+        
 - Start /KafkaCluster/docker-compose.yml
 
         cd KafkaCluster
