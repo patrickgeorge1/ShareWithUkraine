@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { Button, Typography } from '@mui/material';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
@@ -13,10 +14,62 @@ import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
 import { useState, useEffect } from 'react';
 import '../styles/requests.css'
+import { useKeycloak } from '@react-keycloak/web';
+import { userApi } from '../services/userApi';
+import IconButton from '@mui/material/IconButton';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+
+function Row(props) {
+    const { row, type } = props;
+
+    if (type === "good") {
+        return (
+            <React.Fragment>
+                <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+                    {console.log(row)}
+                    <TableCell align="right">{row?.Id}</TableCell>
+                    <TableCell align="right">{row?.RefugeeId}</TableCell>
+                    <TableCell align="right">{row?.GoodName}</TableCell>
+                    <TableCell align="right">{row?.Quantity}</TableCell>
+                    <TableCell align="right">{row?.DeliveryAddress}</TableCell>
+                    <TableCell align="right">{row?.Accepted}</TableCell>
+                    <TableCell align="right">timestamp</TableCell>
+                    <TableCell align="right">{row?.Details}</TableCell>
+                    <TableCell align="right"><Button variant="contained">Accept</Button></TableCell>
+                </TableRow>
+            </React.Fragment>
+        );
+    } else if (type === "shelter") {
+        return (
+            <React.Fragment>
+                <TableRow sx={{ '& > *': { borderBottom: 'unset' } }}>
+                    {console.log(row)}
+                    <TableCell align="right">{row?.Id}</TableCell>
+                    <TableCell align="right">{row?.RefugeeId}</TableCell>
+                    <TableCell align="right">{row?.GoodName}</TableCell>
+                    <TableCell align="right">{row?.Quantity}</TableCell>
+                    <TableCell align="right">{row?.DeliveryAddress}</TableCell>
+                    <TableCell align="right">{row?.Accepted}</TableCell>
+                    <TableCell align="right">timestamp</TableCell>
+                    <TableCell align="right">{row?.Details}</TableCell>
+                    <TableCell align="right"><Button variant="contained">Accept</Button></TableCell>
+                </TableRow>
+            </React.Fragment>
+        );
+    }
+
+
+}
 
 const Requests = () => {
     const [helpType, setHelpType] = useState("Shelter");
     const [myRequests, setMyRequests] = useState("No");
+    const [error, setError] = useState(false);
+    const { initialized, keycloak } = useKeycloak();
+    const [goodRequests, setGoodRequests] = useState([]);
+    const [shelterRequests, setShelterRequests] = useState([]);
+    const [transportRequests, setTransportRequests] = useState([]);
 
     const handleChangeHelpType = (event) => {
         event.preventDefault()
@@ -29,6 +82,26 @@ const Requests = () => {
         console.log(event.target.value)
         setMyRequests(event.target.value);
     };
+
+    useEffect(async () => {
+        if (keycloak && initialized) {
+            try {
+                const response1 = await userApi.getGoodsRequests(keycloak?.token);
+                console.log(response1.data)
+                setGoodRequests(response1.data);
+
+                const response2 = await userApi.getShelterRequests(keycloak?.token);
+                console.log(response2.data)
+                setShelterRequests(response2.data);
+
+                const response3 = await userApi.getTransportRequests(keycloak?.token);
+                console.log(response3.data)
+                transportRequests(response3.data);
+            } catch (error) {
+                setError(true);
+            }
+        }
+    }, [keycloak, initialized])
 
     return (
         <div className="requests">
@@ -103,8 +176,8 @@ const Requests = () => {
                             </TableHead>
                             <TableBody>
                                 {/* {deliveryRequests?.map((row) => (
-                            <Row key={row.id} row={row} />
-                        ))} */}
+                                    <Row key={row.id} row={row} />
+                                ))} */}
                             </TableBody>
                         </Table>
                     </TableContainer>
@@ -147,22 +220,21 @@ const Requests = () => {
                         <Table aria-label="collapsible table">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell />
-                                    <TableCell>Id</TableCell>
-                                    <TableCell align="center">Refugee Id</TableCell>
-                                    <TableCell align="center">Good name</TableCell>
-                                    <TableCell align="center">Quantity</TableCell>
-                                    <TableCell align="center">Delivery address</TableCell>
-                                    <TableCell align="center">Status</TableCell>
-                                    <TableCell align="center">Timestamp</TableCell>
-                                    <TableCell align="center">Details</TableCell>
-                                    <TableCell align="center">Action</TableCell>
+                                    <TableCell align="right">Id</TableCell>
+                                    <TableCell align="right">Refugee Id</TableCell>
+                                    <TableCell align="right">Good name</TableCell>
+                                    <TableCell align="right">Quantity</TableCell>
+                                    <TableCell align="right">Delivery address</TableCell>
+                                    <TableCell align="right">Status</TableCell>
+                                    <TableCell align="right">Timestamp</TableCell>
+                                    <TableCell align="right">Details</TableCell>
+                                    <TableCell align="right">Action</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {/* {deliveryRequests?.map((row) => (
-                            <Row key={row.id} row={row} />
-                        ))} */}
+                                {goodRequests?.map((goodsRequest) => (
+                                    <Row key={goodsRequest.id} row={goodsRequest} type="good" />
+                                ))}
                             </TableBody>
                         </Table>
                     </TableContainer>

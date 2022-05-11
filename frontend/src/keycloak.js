@@ -1,5 +1,14 @@
 import Keycloak from 'keycloak-js'
+import { config } from './utils/Constants';
 
-const keycloak = new Keycloak('/keycloak.json')
+const keycloak_config = {
+    "realm": "master",
+    "url": config.KEYCLOAK_URL,
+    "clientId": "Share with Ukraine",
+}
+
+const keycloak = new Keycloak(keycloak_config)
+// const keycloak = new Keycloak('/keycloak.json')
+
 
 export default keycloak
