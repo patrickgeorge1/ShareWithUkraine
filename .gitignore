@@ -13,3 +13,5 @@ backend/Backup/
 backend/Migrations/20220510201843_migration2.Designer.cs
 backend/Migrations/20220510201843_migration2.cs
 backend/UpgradeLog.htm
+
+keycloak-17.0.1/data/tmp/kc-gzip-cache/7xw9h/
