@@ -1,7 +1,7 @@
 version: '3'
 services:
   backend:
-    image: patrickgeorge1/share-with-ukraine-backend
+    image: patrickgeorge1/share-with-ukraine-backend:latest
     ports:
       - "80:80"
     environment:
@@ -9,7 +9,7 @@ services:
       Jwt__Authority: "http://localhost:8080/realms/master"
 
   frontend:
-    image: patrickgeorge1/share-with-ukraine-frontend
+    image: patrickgeorge1/share-with-ukraine-frontend:latest
     depends_on:
       - backend
     ports:
@@ -20,7 +20,7 @@ services:
 
 
   mailsender:
-    image: patrickgeorge1/share-with-ukraine-mailsender
+    image: patrickgeorge1/share-with-ukraine-mailsender:latest
     environment:
       MAIL_USERNAME: 'ShareWithUkraine.mailsender@gmail.com'
       MAIL_PASSWORD: 'hqulycowxysovuzi'
