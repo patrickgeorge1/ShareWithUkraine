@@ -1,20 +1,21 @@
 version: '3'
 services:
-  # backend:
-  #   image: patrickgeorge1/share-with-ukraine-backend:backend-ci-cd-00031-d8da65d-20220510225946
-  #   ports:
-  #     - "80:80"
-  #   environment:
-  #     # MAIL_USERNAME: 'ShareWithUkraine.mailsender@gmail.com'
+  backend:
+    image: patrickgeorge1/share-with-ukraine-backend:backend-ci-cd-backup-00058-5d1898c-20220516224026
+    ports:
+      - "80:80"
+    environment:
+      ConnectionStrings__backendContext: "User ID =postgres;Password=student;Server=postgres;Port=5432;Database=postgres;Integrated Security=true;Pooling=true;"
+      Jwt__Authority: "http://localhost:8080/realms/master"
 
   frontend:
-    image: patrickgeorge1/share-with-ukraine-frontend:frontend-master-00001-f73c16c-20220511200443
-    # depends_on:
-    #   - backend
+    image: patrickgeorge1/share-with-ukraine-frontend:frontend-master-00001-5d1898c-20220511210011
+    depends_on:
+      - backend
     ports:
       - "3000:3000"
     environment:
-      REACT_APP_BACKEND_URL: 'http://localhost:5000/'
+      REACT_APP_BACKEND_URL: 'http://backend/'
       REACT_APP_KEYCLOAK_URL: 'http://localhost:8080/'
 
 
