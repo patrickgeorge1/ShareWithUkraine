@@ -10,9 +10,12 @@ import DialogContentText from '@mui/material/DialogContentText';
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { useNavigate } from "react-router-dom";
+import { useKeycloak } from '@react-keycloak/web';
+import { userApi } from '../services/userApi';
 
 const AskForGoods = () => {
     const navigate = useNavigate();
+    const { initialized, keycloak } = useKeycloak();
     const [open, setOpen] = useState(false);
     const [goodName, setGoodName] = useState("");
     const [quantity, setQuantity] = useState(0);
@@ -43,11 +46,14 @@ const AskForGoods = () => {
         setOpen(false);
     };
 
-    const handleSentInformation = (event) => {
+    const handleSentInformation = async (event) => {
         if (goodName === "" || quantity <= 0 || deliveryAddress === "" || details === "") {
             setOpen(true)
         } else {
             console.log("goodName = |" + goodName + "| quantity = |" + quantity + "| deliveryAddress = |" + deliveryAddress + "| details = |" + details + "|");
+            const response = await userApi.postAGoodsRequest(keycloak.token, goodName, quantity, deliveryAddress, details);
+            console.log("RESPONSE:" + response);
+
             navigate("/requests")
         }
     }

@@ -1,7 +1,26 @@
 version: '3'
 services:
+  backend:
+    image: patrickgeorge1/share-with-ukraine-backend:latest
+    ports:
+      - "80:80"
+    environment:
+      ConnectionStrings__backendContext: "User ID =postgres;Password=student;Server=postgres;Port=5432;Database=postgres;Integrated Security=true;Pooling=true;"
+      Jwt__Authority: "http://localhost:8080/realms/master"
+
+  frontend:
+    image: patrickgeorge1/share-with-ukraine-frontend:latest
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_BACKEND_URL: 'http://backend/'
+      REACT_APP_KEYCLOAK_URL: 'http://localhost:8080/'
+
+
   mailsender:
-    image: patrickgeorge1/share-with-ukraine-mailsender:kafka-mail-sender-ci-cd-00033-a44e76c-20220510002237
+    image: patrickgeorge1/share-with-ukraine-mailsender:latest
     environment:
       MAIL_USERNAME: 'ShareWithUkraine.mailsender@gmail.com'
       MAIL_PASSWORD: 'hqulycowxysovuzi'
@@ -9,6 +28,8 @@ services:
       KAFKA_CONSUMER_GROUP: email-sender
       KAFKA_BOOTSTRAP_SERVERS: broker:9092
       KAFKA_TOPIC_NAME: email-tasks
+
+
 networks:
   default:
     external:

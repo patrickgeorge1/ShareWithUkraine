@@ -1,6 +1,7 @@
 import { Button } from '@mui/material';
 import React, { Component, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { config } from '../utils/Constants';
 
 class User extends Component {
     constructor(props) {
@@ -17,7 +18,7 @@ class User extends Component {
 
     render() {
         return (
-            <Button color="inherit"><a target="_blank" href="http://localhost:8080/realms/master/account/">{this.state.name}</a></Button>
+            <Button color="inherit"><a target="_blank" href={config.BACKEND_URL + "/realms/master/account/"}>{this.state.name}</a></Button>
         );
     }
 }

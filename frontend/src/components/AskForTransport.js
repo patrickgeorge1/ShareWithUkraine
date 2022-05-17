@@ -13,6 +13,8 @@ import { useNavigate } from "react-router-dom";
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { useKeycloak } from '@react-keycloak/web';
+import { userApi } from '../services/userApi';
 
 const AskForTransport = () => {
     const navigate = useNavigate();
@@ -22,6 +24,7 @@ const AskForTransport = () => {
     const [arrivalDate, setArrivalDate] = useState(null);
     const [noPeople, setNoPeople] = useState(1);
     const [details, setDetails] = useState("");
+    const { initialized, keycloak } = useKeycloak();
 
     const handleChangeSource = (event) => {
         setSource(event.target.value);
@@ -47,12 +50,14 @@ const AskForTransport = () => {
         setOpen(false);
     };
 
-    const handleSentInformation = (event) => {
+    const handleSentInformation = async (event) => {
         if (source === "" || destination === "" || arrivalDate === null || arrivalDate === "" || noPeople <= 0 || details === "") {
             console.log("source = |" + source + "| destination = |" + destination + "| arrivalDate = |" + "| noPeople = |" + noPeople + "| details = |" + details + "|");
             setOpen(true)
         } else {
             console.log("source = |" + source + "| destination = |" + destination + "| arrivalDate = |" + arrivalDate + "| noPeople = |" + noPeople + "| details = |" + details + "|");
+            const response = await userApi.postATransportRequest(keycloak.token, source, destination, arrivalDate, noPeople, details);
+            console.log(response);
             navigate("/requests")
         }
     }

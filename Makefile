@@ -9,9 +9,9 @@ GIT_COMMIT_HASH := $(shell git rev-parse --short HEAD)
 BUILD_TIMESTAMP := $(shell date +'%Y%m%d%H%M%S')
 DOCKER_IMAGE_TAG := $(GIT_BRANCH)-$(GIT_COMMIT_NUMBER)-$(GIT_COMMIT_HASH)-$(BUILD_TIMESTAMP)
 
-FRONTEND_IMAGE_TAG := frontend-$(DOCKER_IMAGE_TAG)
-BACKEND_IMAGE_TAG := backend-$(DOCKER_IMAGE_TAG)
-KAFKA_MAIL_SENDER := kafka-mail-sender-$(DOCKER_IMAGE_TAG)
+FRONTEND_IMAGE_TAG := latest
+BACKEND_IMAGE_TAG := latest
+KAFKA_MAIL_SENDER := latest
 
 build-keycloak:
 	docker build keycloak-17.0.1/Docker --tag keycloak-custom-image

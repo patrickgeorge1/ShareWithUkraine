@@ -14,14 +14,17 @@ import DialogContentText from '@mui/material/DialogContentText';
 import { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import { useNavigate } from "react-router-dom";
+import { useKeycloak } from '@react-keycloak/web';
+import { userApi } from '../services/userApi';
 
 const AskForShelter = () => {
     const navigate = useNavigate();
-    const [transport, setTransport] = useState('Yes');
+    const [transport, setTransport] = useState(true);
     const [noPeople, setNoPeople] = useState(1);
     const [currentLocation, setCurrentLocation] = useState("");
     const [details, setDetails] = useState("");
     const [open, setOpen] = useState(false);
+    const { initialized, keycloak } = useKeycloak();
 
     const handleChangeNoPeople = (event) => {
         setNoPeople(event.target.value);
@@ -47,16 +50,19 @@ const AskForShelter = () => {
         setOpen(false);
     };
 
-    const handleSentInformation = (event) => {
+    const handleSentInformation = async (event) => {
         if (noPeople <= 0 || currentLocation === "" || details === "") {
             setOpen(true)
         } else {
             console.log("noPeople = |" + noPeople + "| transport = |" + transport + "| location = |" + currentLocation + "| details = |" + details + "|");
+            const response = await userApi.postAShelterRequest(keycloak.token, currentLocation, noPeople, transport, details);
+            console.log("RESPONSE: " + response);
+
             navigate("/requests")
         }
     }
 
-    return (
+    return (initialized && keycloak?.authenticated &&
         <div>
             <Dialog open={true} PaperProps={{
                 sx: {
@@ -93,8 +99,8 @@ const AskForShelter = () => {
                                     value={transport}
                                     onChange={handleChangeTransport}
                                 >
-                                    <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-                                    <FormControlLabel value="No" control={<Radio />} label="No" />
+                                    <FormControlLabel value={true} control={<Radio />} label="Yes" />
+                                    <FormControlLabel value={false} control={<Radio />} label="No" />
                                 </RadioGroup>
                             </FormControl>
 
