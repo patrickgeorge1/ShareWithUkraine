@@ -13,6 +13,8 @@ using System;
 using System.Text;
 using System.Text.Json;
 using System.Collections.Generic;
+using Confluent.Kafka;
+using System.Net;
 
 namespace Backend.Controllers
 {
@@ -105,6 +107,7 @@ namespace Backend.Controllers
             }
             goodsRequestModel.RefugeeId = userId;
             goodsRequestModel.Timestamp = DateTime.UtcNow.ToString();
+            await SendOrderRequest("{\"receipe\": \"patrionpatrick@gmail.com\", \"message\": \"ceeva\"}");
             return await _goodsRequestService.Add(goodsRequestModel);
         }
 
@@ -157,6 +160,36 @@ namespace Backend.Controllers
             var request = await _goodsRequestService.Get(id);
             await _goodsRequestService.Delete(id);
             return request;
+        }
+
+        private async Task<bool> SendOrderRequest(string message)
+        {
+            ProducerConfig config = new ProducerConfig
+            {
+                BootstrapServers = "broker:9092",
+                ClientId = Dns.GetHostName()
+            };
+
+            try
+            {
+                using (var producer = new ProducerBuilder
+                <Null, string>(config).Build())
+                {
+                    var result = await producer.ProduceAsync
+                    ("email-tasks", new Message<Null, string>
+                    {
+                        Value = message
+                    });
+
+                    return await Task.FromResult(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occured: {ex.Message}");
+            }
+
+            return await Task.FromResult(false);
         }
     }
 }
