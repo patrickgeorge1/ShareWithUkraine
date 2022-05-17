@@ -18,14 +18,16 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class TransportRequestModelController : ControllerBase
+    public class TransportRequestController : ControllerBase
     {
         private readonly IUserModelService _userService;
-        private readonly ITransportRequestModelService _transportRequestService;
-        public TransportRequestModelController(IUserModelService userService, ITransportRequestModelService transportRequestService)
+        private readonly IHandshakeService _handshakeService;
+        private readonly ITransportRequestService _transportRequestService;
+        public TransportRequestController(IUserModelService userService, ITransportRequestService transportRequestService, IHandshakeService handshakeService)
         {
             _userService = userService;
             _transportRequestService = transportRequestService;
+            _handshakeService = handshakeService;
         }
 
         [HttpGet]
@@ -38,9 +40,8 @@ namespace Backend.Controllers
             {
                 UserModel userModel = new()
                 {
-                    RealName = "bossu",
-                    Username = username,
-                    UserType = "labagiu"
+                    RealName = HttpContext.User.FindFirst("name")?.Value,
+                    Username = username
                 };
                 await _userService.Add(userModel);
             }
@@ -57,9 +58,8 @@ namespace Backend.Controllers
             {
                 UserModel userModel = new()
                 {
-                    RealName = "bossu",
-                    Username = username,
-                    UserType = "labagiu"
+                    RealName = HttpContext.User.FindFirst("name")?.Value,
+                    Username = username
                 };
                 await _userService.Add(userModel);
             }
@@ -77,16 +77,63 @@ namespace Backend.Controllers
             {
                 UserModel userModel = new()
                 {
-                    RealName = "bossu",
-                    Username = username,
-                    UserType = "labagiu"
+                    RealName = HttpContext.User.FindFirst("name")?.Value,
+                    Username = username
                 };
                 await _userService.Add(userModel);
             }
             transportRequestModel.RefugeeId = userId;
+            transportRequestModel.Timestamp = DateTime.UtcNow.ToString();
             return await _transportRequestService.Add(transportRequestModel);
         }
 
+        [HttpPut("{requestId:int}")]
+        [Authorize]
+        public async Task<ActionResult<TransportRequestModel>> PutTransportRequest(int requestId)
+        {
+            var username = HttpContext.User.FindFirst("preferred_username")?.Value;
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
+            {
+                UserModel userModel = new()
+                {
+                    RealName = HttpContext.User.FindFirst("name")?.Value,
+                    Username = username
+                };
+                await _userService.Add(userModel);
+                userId = await _userService.GetByUsername(username);
+            }
+            TransportRequestModel transportRequestModel = await _transportRequestService.Get(requestId);
+            transportRequestModel.Accepted = true;
+            HandshakeModel handshakeModel = new()
+            {
+                RefugeeId = transportRequestModel.RefugeeId,
+                HelperId = userId,
+                RequestType = "TransportRequest",
+                RequestId = requestId
+            };
+            await _handshakeService.Add(handshakeModel);
+            return await _transportRequestService.Update(transportRequestModel);
+        }
+
+        [HttpGet("byUserId/{id:int}")]
+        [Authorize]
+        public async Task<ActionResult<List<TransportRequestModel>>> GetTransportRequestByUserId(int id)
+        {
+            var username = HttpContext.User.FindFirst("preferred_username")?.Value;
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
+            {
+                UserModel userModel = new()
+                {
+                    RealName = HttpContext.User.FindFirst("name")?.Value,
+                    Username = username
+                };
+                await _userService.Add(userModel);
+                userId = await _userService.GetByUsername(username);
+            }
+            return await _transportRequestService.GetAll(goodsRequest => goodsRequest.RefugeeId == id);
+        }
 
         [HttpDelete("{id:int}")]
         [Authorize]
@@ -98,9 +145,8 @@ namespace Backend.Controllers
             {
                 UserModel userModel = new()
                 {
-                    RealName = "bossu",
-                    Username = username,
-                    UserType = "labagiu"
+                    RealName = HttpContext.User.FindFirst("name")?.Value,
+                    Username = username
                 };
                 await _userService.Add(userModel);
                 userId = await _userService.GetByUsername(username);

@@ -34,9 +34,9 @@ namespace backend.Data.Services
             return await _repo.Get(id); 
         }
 
-        public Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> whereCondition)
+        public Task<List<T>> GetAll(Expression<Func<T, bool>> whereCondition)
         {
-            throw new NotImplementedException();
+            return _repo.GetAll(whereCondition);
         }
 
         public async Task<List<T>> GetAll()
@@ -52,7 +52,7 @@ namespace backend.Data.Services
 
         public Task<T> Update(T NewEntity)
         {
-            throw new NotImplementedException();
+            return _repo.Update(NewEntity);
         }
     }
 }

@@ -12,8 +12,6 @@ namespace Backend.Models
         public string RequestType { get; set; }
         public int HelperId { get; set; }
         public int RefugeeId { get; set; }
-        public bool Accepted { get; set; }
         public string Timestamp { get; set; }
-        public string Details { get; set; }
     }
 }

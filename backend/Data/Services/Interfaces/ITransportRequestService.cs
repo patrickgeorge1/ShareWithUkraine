@@ -2,7 +2,7 @@
 
 namespace backend.Data.Services.Interfaces
 {
-    public interface ITransportRequestModelService : IServiceBase<TransportRequestModel>
+    public interface ITransportRequestService : IServiceBase<TransportRequestModel>
     {
     }
 }

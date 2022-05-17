@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace backend.Data.Services
 {
-    public class GoodsRequestModelService : ServiceBase<GoodsRequestModel>, IGoodsRequestModelService
+    public class TransportRequestService : ServiceBase<TransportRequestModel>, ITransportRequestService
     {
 
-        public GoodsRequestModelService(IGoodsRequestModelRepository GoodsRequestsRepo)
-            : base(GoodsRequestsRepo)
+        public TransportRequestService(ITransportRequestModelRepository transportRequestsRepo)
+            : base(transportRequestsRepo)
         { }
     }
 }
