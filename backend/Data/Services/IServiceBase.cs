@@ -45,7 +45,7 @@ namespace backend.Data.Services
         /// <typeparam name="E">the entity type to load</typeparam> 
         /// <param name="where">where condition</param> 
         /// <returns>the loaded entity</returns> 
-        Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> whereCondition);
+        Task<List<T>> GetAll(Expression<Func<T, bool>> whereCondition);
 
         /// <summary>
         /// Get all the element of this repository

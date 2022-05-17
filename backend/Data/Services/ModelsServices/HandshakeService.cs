@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace backend.Data.Services
 {
-    public class ShelterRequestModelService : ServiceBase<ShelterRequestModel>, IShelterRequestModelService
+    public class HandshakeService : ServiceBase<HandshakeModel>, IHandshakeService
     {
 
-        public ShelterRequestModelService(IShelterRequestModelRepository ShelterRequestsRepo)
-            : base(ShelterRequestsRepo)
+        public HandshakeService(IHandshakeModelRepository HandshakeRepo)
+            : base(HandshakeRepo)
         { }
     }
 }

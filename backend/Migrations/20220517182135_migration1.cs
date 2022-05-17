@@ -3,7 +3,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace backend.Migrations
 {
-    public partial class Migration1 : Migration
+    public partial class migration1 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -24,6 +24,23 @@ namespace backend.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GoodsRequests", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Handshakes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RequestId = table.Column<int>(type: "integer", nullable: false),
+                    RequestType = table.Column<string>(type: "text", nullable: true),
+                    HelperId = table.Column<int>(type: "integer", nullable: false),
+                    RefugeeId = table.Column<int>(type: "integer", nullable: false),
+                    Timestamp = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Handshakes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -74,7 +91,7 @@ namespace backend.Migrations
                     Username = table.Column<string>(type: "text", nullable: false),
                     RealName = table.Column<string>(type: "text", nullable: false),
                     Phone = table.Column<string>(type: "character varying(15)", maxLength: 15, nullable: true),
-                    UserType = table.Column<string>(type: "text", nullable: false)
+                    UserType = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -86,6 +103,9 @@ namespace backend.Migrations
         {
             migrationBuilder.DropTable(
                 name: "GoodsRequests");
+
+            migrationBuilder.DropTable(
+                name: "Handshakes");
 
             migrationBuilder.DropTable(
                 name: "ShelterRequests");

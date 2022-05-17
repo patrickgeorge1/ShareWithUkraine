@@ -2,7 +2,7 @@
 
 namespace backend.Data.Services.Interfaces
 {
-    public interface IShelterRequestModelService : IServiceBase<ShelterRequestModel>
+    public interface IShelterRequestService : IServiceBase<ShelterRequestModel>
     {
     }
 }

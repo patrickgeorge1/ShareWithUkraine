@@ -18,5 +18,6 @@ namespace Backend.Data
         public DbSet<Backend.Models.TransportRequestModel> TransportRequests { get; set; }
         public DbSet<Backend.Models.ShelterRequestModel> ShelterRequests { get; set; }
         public DbSet<Backend.Models.GoodsRequestModel> GoodsRequests { get; set; }
+        public DbSet<Backend.Models.HandshakeModel> Handshakes { get; set; }
     }
 }

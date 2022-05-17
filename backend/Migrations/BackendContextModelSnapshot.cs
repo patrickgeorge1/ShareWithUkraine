@@ -51,6 +51,33 @@ namespace backend.Migrations
                     b.ToTable("GoodsRequests");
                 });
 
+            modelBuilder.Entity("Backend.Models.HandshakeModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("HelperId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RefugeeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RequestId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RequestType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Timestamp")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Handshakes");
+                });
+
             modelBuilder.Entity("Backend.Models.ShelterRequestModel", b =>
                 {
                     b.Property<int>("Id")
@@ -139,7 +166,6 @@ namespace backend.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("UserType")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Username")

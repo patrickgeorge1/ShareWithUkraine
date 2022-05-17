@@ -9,8 +9,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace backend.Migrations
 {
     [DbContext(typeof(BackendContext))]
-    [Migration("20220502172207_Migration1")]
-    partial class Migration1
+    [Migration("20220517182135_migration1")]
+    partial class migration1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -51,6 +51,33 @@ namespace backend.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("GoodsRequests");
+                });
+
+            modelBuilder.Entity("Backend.Models.HandshakeModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<int>("HelperId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RefugeeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RequestId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("RequestType")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Timestamp")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Handshakes");
                 });
 
             modelBuilder.Entity("Backend.Models.ShelterRequestModel", b =>
@@ -141,7 +168,6 @@ namespace backend.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("UserType")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Username")
