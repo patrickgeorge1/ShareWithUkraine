@@ -32,6 +32,8 @@ Figma: https://www.figma.com/file/8eKsoJQhJTCMgPkIlueRvh/Proiect?node-id=0%3A1
         Import keycloak-17.0.1/realm-export_1.json with Skip strategy
 
 
+        docker-compose -f prometheus-compose.yml up -d     
+
 Ignore file changes:
 
 - [Single file](https://stackoverflow.com/questions/18276951/how-do-i-stop-git-from-tracking-any-changes-to-a-file-from-this-commit-forward)
