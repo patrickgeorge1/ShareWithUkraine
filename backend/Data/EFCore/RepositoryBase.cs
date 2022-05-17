@@ -46,9 +46,9 @@ namespace Backend.Data.EFCore
             return await context.Set<T>().ToListAsync();
         }
 
-        public Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>> whereCondition)
+        public async Task<List<T>> GetAll(Expression<Func<T, bool>> whereCondition)
         {
-            throw new NotImplementedException();
+            return await context.Set<T>().Where(whereCondition).ToListAsync();
         }
 
         public Task<T> GetSingle(Expression<Func<T, bool>> whereCondition)

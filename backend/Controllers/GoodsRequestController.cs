@@ -18,14 +18,16 @@ namespace Backend.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GoodsRequestModelController : ControllerBase
+    public class GoodsRequestController : ControllerBase
     {
         private readonly IUserModelService _userService;
-        private readonly IGoodsRequestModelService _goodsRequestService;
-        public GoodsRequestModelController(IUserModelService userService, IGoodsRequestModelService goodsRequestService)
+        private readonly IHandshakeService _handshakeService;
+        private readonly IGoodsRequestService _goodsRequestService;
+        public GoodsRequestController(IUserModelService userService, IGoodsRequestService goodsRequestService, IHandshakeService handshakeService)
         {
             _userService = userService;
             _goodsRequestService = goodsRequestService;
+            _handshakeService = handshakeService;
         }
 
         [HttpGet]
@@ -38,9 +40,8 @@ namespace Backend.Controllers
             {
                 UserModel userModel = new()
                 {
-                    RealName = "bossu",
-                    Username = username,
-                    UserType = "labagiu"
+                    RealName = HttpContext.User.FindFirst("name")?.Value,
+                    Username = username
                 };
                 await _userService.Add(userModel);
                 userId = await _userService.GetByUsername(username);
@@ -58,9 +59,8 @@ namespace Backend.Controllers
             {
                 UserModel userModel = new()
                 {
-                    RealName = "bossu",
-                    Username = username,
-                    UserType = "labagiu"
+                    RealName = HttpContext.User.FindFirst("name")?.Value,
+                    Username = username
                 };
                 await _userService.Add(userModel);
                 userId = await _userService.GetByUsername(username);
@@ -68,6 +68,24 @@ namespace Backend.Controllers
             return await _goodsRequestService.Get(id);
         }
 
+        [HttpGet("byUserId/{id:int}")]
+        [Authorize]
+        public async Task<ActionResult<List<GoodsRequestModel>>> GetGoodsRequestByUserId(int id)
+        {
+            var username = HttpContext.User.FindFirst("preferred_username")?.Value;
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
+            {
+                UserModel userModel = new()
+                {
+                    RealName = HttpContext.User.FindFirst("name")?.Value,
+                    Username = username
+                };
+                await _userService.Add(userModel);
+                userId = await _userService.GetByUsername(username);
+            }
+            return await _goodsRequestService.GetAll(goodsRequest => goodsRequest.RefugeeId == id);
+        }
 
         [HttpPost]
         [Authorize]
@@ -79,15 +97,44 @@ namespace Backend.Controllers
             {
                 UserModel userModel = new()
                 {
-                    RealName = "bossu",
-                    Username = username,
-                    UserType = "labagiu"
+                    RealName = HttpContext.User.FindFirst("name")?.Value,
+                    Username = username
                 };
                 await _userService.Add(userModel);
                 userId = await _userService.GetByUsername(username);
             }
             goodsRequestModel.RefugeeId = userId;
+            goodsRequestModel.Timestamp = DateTime.UtcNow.ToString();
             return await _goodsRequestService.Add(goodsRequestModel);
+        }
+
+        [HttpPut("{requestId:int}")]
+        [Authorize]
+        public async Task<ActionResult<GoodsRequestModel>> PutGoodsRequest(int requestId)
+        {
+            var username = HttpContext.User.FindFirst("preferred_username")?.Value;
+            var userId = await _userService.GetByUsername(username);
+            if (userId == -1)
+            {
+                UserModel userModel = new()
+                {
+                    RealName = HttpContext.User.FindFirst("name")?.Value,
+                    Username = username
+                };
+                await _userService.Add(userModel);
+                userId = await _userService.GetByUsername(username);
+            }
+            GoodsRequestModel goodsRequestModel = await _goodsRequestService.Get(requestId);
+            goodsRequestModel.Accepted = true;
+            HandshakeModel handshakeModel = new()
+            {
+                RefugeeId = goodsRequestModel.RefugeeId,
+                HelperId = userId,
+                RequestType = "GoodsRequest",
+                RequestId = requestId
+            };
+            await _handshakeService.Add(handshakeModel);
+            return await _goodsRequestService.Update(goodsRequestModel);
         }
 
 
@@ -101,9 +148,8 @@ namespace Backend.Controllers
             {
                 UserModel userModel = new()
                 {
-                    RealName = "bossu",
-                    Username = username,
-                    UserType = "labagiu"
+                    RealName = HttpContext.User.FindFirst("name")?.Value,
+                    Username = username
                 };
                 await _userService.Add(userModel);
                 userId = await _userService.GetByUsername(username);

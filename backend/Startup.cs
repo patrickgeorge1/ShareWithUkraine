@@ -93,16 +93,19 @@ namespace Backend
             services.AddDbContext<BackendContext>(options =>
                     options.UseNpgsql(Configuration.GetConnectionString("backendContext")));
 
-            services.AddTransient<IUserModelService, UserModelService>();
+            services.AddTransient<IUserModelService, UserService>();
             services.AddTransient<IUserModelRepository, UserModelRepository>();
 
-            services.AddTransient<ITransportRequestModelService, TransportRequestModelService>();
+            services.AddTransient<IHandshakeService, HandshakeService>();
+            services.AddTransient<IHandshakeModelRepository, HandshakeModelRepository>();
+
+            services.AddTransient<ITransportRequestService, TransportRequestService>();
             services.AddTransient<ITransportRequestModelRepository, TransportRequestModelRepository>();
 
-            services.AddTransient<IShelterRequestModelService, ShelterRequestModelService>();
+            services.AddTransient<IShelterRequestService, ShelterRequestService>();
             services.AddTransient<IShelterRequestModelRepository, ShelterRequestModelRepository>();
 
-            services.AddTransient<IGoodsRequestModelService, GoodsRequestModelService>();
+            services.AddTransient<IGoodsRequestService, GoodsRequestService>();
             services.AddTransient<IGoodsRequestModelRepository, GoodsRequestModelRepository>();
 
         }

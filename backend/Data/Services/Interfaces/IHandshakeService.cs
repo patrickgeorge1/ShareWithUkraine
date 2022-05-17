@@ -2,7 +2,7 @@
 
 namespace backend.Data.Services.Interfaces
 {
-    public interface IGoodsRequestModelService : IServiceBase<GoodsRequestModel>
+    public interface IHandshakeService : IServiceBase<HandshakeModel>
     {
     }
 }

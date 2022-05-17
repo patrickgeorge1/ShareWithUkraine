@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace backend.Data.Services
 {
-    public class UserModelService : ServiceBase<UserModel>, IUserModelService
+    public class UserService : ServiceBase<UserModel>, IUserModelService
     {
 
-        public UserModelService(IUserModelRepository usersRepo)
+        public UserService(IUserModelRepository usersRepo)
             : base(usersRepo)
         { }
 
