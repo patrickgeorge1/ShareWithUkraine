@@ -115,7 +115,7 @@ const Home = () => {
                         gutterBottom
                         variant="h5"
                     >
-                        We are your <mark class="red"> help</mark>, do NOT hesitate to ask for <mark class="red">what you need</mark>
+                        We are your <mark className="red"> help</mark>, do NOT hesitate to ask for <mark className="red">what you need</mark>
                     </Typography>
 
                 </div>
