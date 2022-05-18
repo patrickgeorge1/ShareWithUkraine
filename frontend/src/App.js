@@ -1,6 +1,6 @@
 import './App.css';
 import Navbar from './components/Navbar';
-import { BrowserRouter, Route, Link, Routes } from 'react-router-dom';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import { withHooksKC } from './utils/withHooksKC';
 import Home from './components/Home';
 import AskForHelp from './components/AskForHelp';
@@ -9,15 +9,8 @@ import AskForGoods from './components/AskForGoods';
 import AskForTransport from './components/AskForTransport';
 import NotFound from './components/Notfound';
 import Requests from './components/Requests';
-import { useEffect } from 'react';
-import { config } from './utils/Constants';
 
 function App() {
-
-  // useEffect(() => {
-  //   console.log("BACKEND URL: " + config.API_URL)
-  //   console.log("KEYCLOAK URL: " + config.KEYCLOAK_URL)
-  // }, [])
 
   return (
     <div className="App">

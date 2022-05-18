@@ -3,3 +3,17 @@
     margin: auto;
     align-items: center;
 }
+
+.requests {
+    width: 100%;
+    margin: auto;
+    justify-content: center;
+    /* background-image: url(../img/bg-requests.jpg);
+    background-repeat: 'no-repeat'; */
+}
+
+.alert {
+    width: 100%;
+    margin: auto;
+    justify-content: center;
+}

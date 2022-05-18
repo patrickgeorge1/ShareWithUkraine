@@ -8,7 +8,5 @@ const keycloak_config = {
 }
 
 const keycloak = new Keycloak(keycloak_config)
-// const keycloak = new Keycloak('/keycloak.json')
-
 
 export default keycloak

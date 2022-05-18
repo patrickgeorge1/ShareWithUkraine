@@ -5,7 +5,20 @@ export const userApi = {
     postAGoodsRequest,
     postAShelterRequest,
     postATransportRequest,
-    getGoodsRequests
+    getGoodsRequests,
+    getShelterRequests,
+    getTransportRequests,
+    getCurrentUser,
+    updateUser,
+    getGoodsRequestsByUserId,
+    getShelterRequestsByUserId,
+    getTransportRequestsByUserId,
+    deleteGoodsRequest,
+    deleteShelterRequest,
+    deleteTransportRequest,
+    acceptGoodsRequest,
+    acceptShelterRequest,
+    acceptTransportRequest,
 }
 
 const instance = axios.create({
@@ -20,7 +33,7 @@ function postAGoodsRequest(token, goodName, quantity, deliveryAddress, details) 
         details: details
     }
 
-    return instance.post(`/api/GoodsRequestModel`, obj, {
+    return instance.post(`/api/GoodsRequest`, obj, {
         headers: {
             'Authorization': bearerAuth(token),
         }
@@ -35,7 +48,7 @@ function postAShelterRequest(token, houseLocation, availableSeats, transportIncl
         details: details
     }
 
-    return instance.post(`/api/ShelterRequestModel`, obj, {
+    return instance.post(`/api/ShelterRequest`, obj, {
         headers: {
             'Authorization': bearerAuth(token),
         }
@@ -51,7 +64,7 @@ function postATransportRequest(token, fromWhere, destination, arrivalTime, avail
         details: details
     }
 
-    return instance.post(`/api/TransportRequestModel`, obj, {
+    return instance.post(`/api/TransportRequest`, obj, {
         headers: {
             'Authorization': bearerAuth(token),
         }
@@ -59,7 +72,115 @@ function postATransportRequest(token, fromWhere, destination, arrivalTime, avail
 }
 
 function getGoodsRequests(token) {
-    return instance.get(`/api/GoodsRequestModel`, {
+    return instance.get(`/api/GoodsRequest`, {
+        headers: {
+            'Authorization': bearerAuth(token)
+        }
+    })
+}
+
+function getShelterRequests(token) {
+    return instance.get(`/api/ShelterRequest`, {
+        headers: {
+            'Authorization': bearerAuth(token)
+        }
+    })
+}
+
+function getTransportRequests(token) {
+    return instance.get(`/api/TransportRequest`, {
+        headers: {
+            'Authorization': bearerAuth(token)
+        }
+    })
+}
+
+function getCurrentUser(token) {
+    return instance.get(`/api/User`, {
+        headers: {
+            'Authorization': bearerAuth(token)
+        }
+    })
+}
+
+function updateUser(token, role, phone) {
+    var obj = {
+        phone: phone,
+        userType: role,
+    }
+
+    return instance.put(`/api/User`, obj, {
+        headers: {
+            'Authorization': bearerAuth(token),
+        }
+    })
+}
+
+function getGoodsRequestsByUserId(token, userId) {
+    return instance.get(`/api/GoodsRequest/byUserId/${userId}`, {
+        headers: {
+            'Authorization': bearerAuth(token)
+        }
+    })
+}
+
+function getShelterRequestsByUserId(token, userId) {
+    return instance.get(`/api/ShelterRequest/byUserId/${userId}`, {
+        headers: {
+            'Authorization': bearerAuth(token)
+        }
+    })
+}
+
+function getTransportRequestsByUserId(token, userId) {
+    return instance.get(`/api/TransportRequest/byUserId/${userId}`, {
+        headers: {
+            'Authorization': bearerAuth(token)
+        }
+    })
+}
+
+function deleteGoodsRequest(token, requestId) {
+    return instance.delete(`/api/GoodsRequest/${requestId}`, {
+        headers: {
+            'Authorization': bearerAuth(token)
+        }
+    })
+}
+function deleteShelterRequest(token, requestId) {
+    return instance.delete(`/api/ShelterRequest/${requestId}`, {
+        headers: {
+            'Authorization': bearerAuth(token)
+        }
+    })
+}
+
+function deleteTransportRequest(token, requestId) {
+    return instance.delete(`/api/TransportRequest/${requestId}`, {
+        headers: {
+            'Authorization': bearerAuth(token)
+        }
+    })
+}
+
+function acceptShelterRequest(token, requestId) {
+    return instance.put(`/api/ShelterRequest/${requestId}`, "", {
+        headers: {
+            'Authorization': bearerAuth(token)
+        }
+    })
+}
+
+function acceptGoodsRequest(token, requestId) {
+    return instance.put(`/api/GoodsRequest/${requestId}`, "", {
+        headers: {
+            'Authorization': bearerAuth(token)
+        }
+    })
+}
+
+function acceptTransportRequest(token, requestId) {
+    return instance.put(`/api/TransportRequest/${requestId}`, "", {
         headers: {
             'Authorization': bearerAuth(token)
         }

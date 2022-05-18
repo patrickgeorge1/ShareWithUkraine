@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Faq from 'react-faq-component';
 import logo from "../img/logo2.png"
 import shelter from "../img/shelter.png"
@@ -7,7 +7,7 @@ import transport from "../img/transport.png"
 import '../styles/home.css';
 import Typography from '@mui/material/Typography';
 import FooterComponent from './Footer';
-import { Button } from '@mui/material';
+import { Button, TextField, Alert } from '@mui/material';
 import { useKeycloak } from '@react-keycloak/web';
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -17,11 +17,44 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { withHooksKC } from '../utils/withHooksKC';
+import FormControl from '@mui/material/FormControl';
+import Radio from "@mui/material/Radio";
+import RadioGroup from "@mui/material/RadioGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+import { userApi } from '../services/userApi';
 
 const Home = () => {
     const { initialized, keycloak } = useKeycloak();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false)
+    const [openSelectPhoneAndRole, setOpenSelectPhoneAndRole] = useState(true)
+    const [role, setRole] = useState("Refugee")
+    const [phone, setPhone] = useState("")
+    const [state, setState] = useState(0);
+    const [error, setError] = useState(false)
+    const [currentUser, setCurrentUser] = useState(null)
+
+    useEffect(async () => {
+        if (keycloak && initialized) {
+            try {
+                const response = await userApi.getCurrentUser(keycloak?.token);
+                if (response.status === 200) {
+                    setCurrentUser(response.data);
+                }
+            } catch (error) {
+                setError(true);
+            }
+        }
+    }, [keycloak, initialized])
+
+    const handleChangeRole = (event) => {
+        setRole(event.target.value);
+    };
+
+    const handleChangePhone = (event) => {
+        setPhone(event.target.value);
+    };
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -29,6 +62,24 @@ const Home = () => {
 
     const handleClose = () => {
         setOpen(false);
+    };
+
+    const handleSelectPhoneAndRole = async () => {
+        if (phone.length < 10) {
+            setError(true)
+        } else {
+            try {
+                const response = await userApi.updateUser(keycloak.token, role, phone);
+                if (response.status === 200) {
+                    setState(1);
+                } else {
+                    setState(-1);
+                }
+                setOpenSelectPhoneAndRole(false);
+            } catch (error) {
+                setError(true);
+            }
+        }
     };
 
     const data = {
@@ -49,7 +100,7 @@ const Home = () => {
             },
             {
                 title: "How do I apply for shelter, food or transport?",
-                content: "All you have to do is go to the \'Ask for help\' button above, fill in the required data and just wait, soon someone will help you with everything you need."
+                content: "All you have to do is go to the 'Ask for help' button above, fill in the required data and just wait, soon someone will help you with everything you need."
             }]
     }
 
@@ -71,6 +122,63 @@ const Home = () => {
 
                 <div className="first-part-content">
                     <img className='logo2' src={logo} alt="Learning Wiki" />
+                    {initialized && keycloak?.authenticated && currentUser && currentUser.UserType === null &&
+                        <Dialog
+                            open={openSelectPhoneAndRole}
+                            onClose={handleSelectPhoneAndRole}
+                            aria-labelledby="alert-dialog-title"
+                            aria-describedby="alert-dialog-description"
+                        >
+                            <DialogTitle id="alert-dialog-title">
+                                {"Please enter your phone number and select your role:"}
+                            </DialogTitle>
+                            <DialogContent>
+                                <FormControl sx={{ m: 2, minWidth: 400 }}>
+                                    <TextField
+                                        error={phone.length <= 10 || phone === "" ? true : false}
+                                        label="Phone number:"
+                                        type="number"
+                                        required={true}
+                                        variant="standard"
+                                        value={phone}
+                                        onChange={handleChangePhone}
+                                    />
+                                </FormControl>
+
+                                <FormControl sx={{ m: 2, minWidth: 400 }} >
+                                    <FormLabel>What are you?</FormLabel>
+                                    <RadioGroup
+                                        required={true}
+                                        name="What are you?"
+                                        value={role}
+                                        onChange={handleChangeRole}
+                                    >
+                                        <FormControlLabel value="Refugee" control={<Radio />} label="Refugee" />
+                                        <FormControlLabel value="Helper" control={<Radio />} label="Helper" />
+                                    </RadioGroup>
+                                </FormControl>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleSelectPhoneAndRole} autoFocus>
+                                    Ok
+                                </Button>
+                            </DialogActions>
+                            <div>
+                                {/* {
+                                    error === true
+                                        ? <Alert severity="error">Phone number must be at least 10 characters long</Alert>
+                                        : <div></div>
+                                } */}
+                                {state === 1
+                                    ? <Alert severity="success">User successfully updated</Alert>
+                                    : <div></div>}
+                                {state === -1
+                                    ? <Alert severity="error">Something wrong happened, please try again</Alert>
+                                    : <div></div>}
+                            </div>
+                        </Dialog>
+                    }
+
                     <div className="welcome-message">
                         <Typography
                             color="textPrimary"
@@ -211,7 +319,7 @@ const Home = () => {
 
             </div>
             <FooterComponent />
-        </div>
+        </div >
 
     );
 }
