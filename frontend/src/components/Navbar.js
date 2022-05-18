@@ -12,11 +12,27 @@ import { useKeycloak } from '@react-keycloak/web';
 import LoginPage from './Login';
 import User from './User';
 import Logout from './Logout';
+import { userApi } from '../services/userApi';
+import { useEffect, useState } from "react";
 
 function Navbar() {
 
     const { initialized, keycloak } = useKeycloak();
-    const settings = ["Profile", "Singout"]
+    const [currentUser, setCurrentUser] = useState(null)
+    const [error, setError] = useState(false)
+
+    useEffect(async () => {
+        if (keycloak && initialized) {
+            try {
+                const response = await userApi.getCurrentUser(keycloak?.token);
+                if (response.status === 200) {
+                    setCurrentUser(response.data);
+                }
+            } catch (error) {
+                setError(true);
+            }
+        }
+    }, [keycloak, initialized, currentUser])
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -33,13 +49,13 @@ function Navbar() {
                                 <Button color="inherit">
                                     <Link to="/">Home</Link>
                                 </Button>
-                                {initialized && keycloak?.authenticated &&
-                                    <Button color="inherit">
+                                {initialized && keycloak?.authenticated && currentUser && currentUser.UserType === "Refugee" &&
+                                    < Button color="inherit">
                                         <Link to="/askforhelp">Ask for help</Link>
                                     </Button>
                                 }
-                                {initialized && keycloak?.authenticated &&
-                                    <Button color="inherit">
+                                {initialized && keycloak?.authenticated && currentUser && currentUser.UserType !== null &&
+                                    < Button color="inherit">
                                         <Link to="/requests">Requests</Link>
                                     </Button>
                                 }
@@ -57,7 +73,7 @@ function Navbar() {
                     </Grid>
                 </Toolbar>
             </AppBar>
-        </Box>
+        </Box >
     );
 }
 export default Navbar;

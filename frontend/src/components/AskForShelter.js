@@ -1,5 +1,5 @@
 
-import { Button, MenuItem, TextField } from '@mui/material';
+import { Button, Alert, TextField } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -25,6 +25,22 @@ const AskForShelter = () => {
     const [details, setDetails] = useState("");
     const [open, setOpen] = useState(false);
     const { initialized, keycloak } = useKeycloak();
+    const [state, setState] = useState(0);
+    const [currentUser, setCurrentUser] = useState(null)
+    const [error, setError] = useState(false);
+
+    useEffect(async () => {
+        if (keycloak && initialized) {
+            try {
+                const response = await userApi.getCurrentUser(keycloak?.token);
+                if (response.status === 200) {
+                    setCurrentUser(response.data);
+                }
+            } catch (error) {
+                setError(true);
+            }
+        }
+    }, [keycloak, initialized])
 
     const handleChangeNoPeople = (event) => {
         setNoPeople(event.target.value);
@@ -54,15 +70,17 @@ const AskForShelter = () => {
         if (noPeople <= 0 || currentLocation === "" || details === "") {
             setOpen(true)
         } else {
-            console.log("noPeople = |" + noPeople + "| transport = |" + transport + "| location = |" + currentLocation + "| details = |" + details + "|");
             const response = await userApi.postAShelterRequest(keycloak.token, currentLocation, noPeople, transport, details);
-            console.log("RESPONSE: " + response);
-
-            navigate("/requests")
+            if (response.status === 200) {
+                setState(1)
+                setTimeout(() => navigate("/requests"), 3000)
+            } else {
+                setState(-1)
+            }
         }
     }
 
-    return (initialized && keycloak?.authenticated &&
+    return (initialized && keycloak?.authenticated && currentUser && currentUser.UserType !== null &&
         <div>
             <Dialog open={true} PaperProps={{
                 sx: {
@@ -131,6 +149,14 @@ const AskForShelter = () => {
                                 <Button variant="contained" onClick={handleSentInformation}>Send information</Button>
                                 <Button variant="contained" onClick={handleClose}>Close</Button>
                             </Stack>
+                            <div>
+                                {state === 1
+                                    ? <Alert severity="success">Your shelter request has been sent. You will be redirected...</Alert>
+                                    : <div></div>}
+                                {state === -1
+                                    ? <Alert severity="error">Something wrong happened, please try again!</Alert>
+                                    : <div></div>}
+                            </div>
                         </div>
                     </DialogContent>
                 </Box>
