@@ -3,10 +3,10 @@ services:
   backend:
     image: patrickgeorge1/share-with-ukraine-backend:latest
     ports:
-      - "80:80"
+      - "8888:80"
     environment:
       ConnectionStrings__backendContext: "User ID =postgres;Password=student;Server=postgres;Port=5432;Database=postgres;Integrated Security=true;Pooling=true;"
-      Jwt__Authority: "http://localhost:8080/realms/master"
+      Jwt__Authority: "http://host.docker.internal:8080/realms/master"
 
   frontend:
     image: patrickgeorge1/share-with-ukraine-frontend:latest
@@ -15,7 +15,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      REACT_APP_BACKEND_URL: 'http://backend/'
+      REACT_APP_BACKEND_URL: 'http://backend:8888/'
       REACT_APP_KEYCLOAK_URL: 'http://localhost:8080/'
 
 
