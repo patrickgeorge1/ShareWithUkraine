@@ -65,8 +65,8 @@ namespace Backend
 
             var origins = new List<string>()
             {
-                "http://localhost:3000",
-                "http://localhost:8080"
+                "http://host.docker.internal:3000",
+                "http://host.docker.internal:8080"
             };
             services.AddCors(options =>
             {
