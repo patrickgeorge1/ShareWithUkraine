@@ -5,8 +5,8 @@ Util commands.txt
 KafkaStreamedEmailSender/.gitignore
 
 backend/.vs/
-backend/bin/Debug
-backend/obj/Debug
+backend/bin/
+backend/obj/
 keycloak-17.0.1/
 
 backend/Backup/
