@@ -44,6 +44,9 @@ namespace Backend
             }).AddJwtBearer(options =>
             {
                 options.Authority = Configuration["Jwt:Authority"];
+                Console.WriteLine("mone_iulian");
+
+                Console.WriteLine(Configuration["Jwt:Authority"]);
                 options.Audience = Configuration["Jwt:Audience"];
                 options.RequireHttpsMetadata = false;
                 options.Events = new JwtBearerEvents()

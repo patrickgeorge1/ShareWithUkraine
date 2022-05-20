@@ -39,6 +39,10 @@ Figma: https://www.figma.com/file/8eKsoJQhJTCMgPkIlueRvh/Proiect?node-id=0%3A1
 
         docker-compose -f nginx-compose.yml up -d 
 
+- Make backend migrations
+
+        https://stackoverflow.com/questions/45382536/how-to-enable-migrations-in-visual-studio-for-mac
+
 Ignore file changes:
 
 - [Single file](https://stackoverflow.com/questions/18276951/how-do-i-stop-git-from-tracking-any-changes-to-a-file-from-this-commit-forward)
