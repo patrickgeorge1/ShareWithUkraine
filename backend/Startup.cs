@@ -47,6 +47,7 @@ namespace Backend
                 Console.WriteLine("mone_iulian");
 
                 Console.WriteLine(Configuration["Jwt:Authority"]);
+                options.TokenValidationParameters = new() { ValidateIssuer = false };
                 options.Audience = Configuration["Jwt:Audience"];
                 options.RequireHttpsMetadata = false;
                 options.Events = new JwtBearerEvents()
