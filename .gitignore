@@ -7,7 +7,7 @@ KafkaStreamedEmailSender/.gitignore
 backend/.vs/
 backend/bin/Debug
 backend/obj/Debug
-keycloak-17.0.1/data/tmp/kc-gzip-cache/kiy6k/
+keycloak-17.0.1/
 
 backend/Backup/
 backend/Migrations/20220510201843_migration2.Designer.cs
