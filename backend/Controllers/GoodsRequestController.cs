@@ -107,7 +107,7 @@ namespace Backend.Controllers
             }
             goodsRequestModel.RefugeeId = userId;
             goodsRequestModel.Timestamp = DateTime.UtcNow.ToString();
-            await SendOrderRequest("{\"receipe\": \"patrionpatrick@gmail.com\", \"message\": \"ceeva\"}");
+            await SendOrderRequest("{\"recipient\": \"patrionpatrick@gmail.com\", \"message\": \"ceeva\"}");
             return await _goodsRequestService.Add(goodsRequestModel);
         }
 
