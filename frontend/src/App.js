@@ -9,16 +9,23 @@ import AskForGoods from './components/AskForGoods';
 import AskForTransport from './components/AskForTransport';
 import NotFound from './components/Notfound';
 import Requests from './components/Requests';
+import { useState } from 'react';
 
 function App() {
+
+  const [refreshFlag, setRefreshFlag] = useState(true)
+  const toggleRefreshNavbar = () => {
+    setRefreshFlag(!refreshFlag)
+    console.log("here")
+  }
 
   return (
     <div className="App">
       <BrowserRouter>
-        <Navbar></Navbar>
+        <Navbar refresh={refreshFlag}></Navbar>
         <div className="container">
           <Routes>
-            <Route exact path='/' element={<Home />} />
+            <Route exact path='/' element={<Home navbarRefreshSignal={toggleRefreshNavbar} />} />
             <Route exact path='/askforhelp' element={<AskForHelp />} />
             <Route exact path='/askforhelp/shelter' element={<AskForShelter />} />
             <Route exact path='/askforhelp/goods' element={<AskForGoods />} />
