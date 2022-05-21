@@ -15,7 +15,7 @@ import Logout from './Logout';
 import { userApi } from '../services/userApi';
 import { useEffect, useState } from "react";
 
-function Navbar() {
+function Navbar({refresh}) {
 
     const { initialized, keycloak } = useKeycloak();
     const [currentUser, setCurrentUser] = useState(null)
@@ -32,7 +32,7 @@ function Navbar() {
                 setError(true);
             }
         }
-    }, [keycloak, initialized, currentUser])
+    }, [keycloak, initialized, refresh])
 
     return (
         <Box sx={{ flexGrow: 1 }}>
@@ -65,7 +65,6 @@ function Navbar() {
                     <Grid className="rightGrid">
                         {initialized && keycloak?.authenticated ?
                             <div style={{ display: 'inline-block' }}>
-                                {/* <Avatar src={profil} /> */}
                                 <User keycloak={keycloak} />
                                 <Logout keycloak={keycloak} />
                             </div> : <LoginPage></LoginPage>

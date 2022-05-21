@@ -24,7 +24,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormLabel from "@mui/material/FormLabel";
 import { userApi } from '../services/userApi';
 
-const Home = () => {
+const Home = ({navbarRefreshSignal}) => {
     const { initialized, keycloak } = useKeycloak();
     const navigate = useNavigate();
     const [open, setOpen] = useState(false)
@@ -78,6 +78,8 @@ const Home = () => {
                 setOpenSelectPhoneAndRole(false);
             } catch (error) {
                 setError(true);
+            } finally {
+                navbarRefreshSignal()
             }
         }
     };
