@@ -107,7 +107,6 @@ namespace Backend.Controllers
             }
             goodsRequestModel.RefugeeId = userId;
             goodsRequestModel.Timestamp = DateTime.UtcNow.ToString();
-            await SendOrderRequest("{\"recipient\": \"patrionpatrick@gmail.com\", \"message\": \"ceeva\"}");
             return await _goodsRequestService.Add(goodsRequestModel);
         }
 
@@ -136,7 +135,17 @@ namespace Backend.Controllers
                 RequestType = "GoodsRequest",
                 RequestId = requestId
             };
+
+            var refugee= await _userService.Get(goodsRequestModel.RefugeeId);
+            var helper = await _userService.Get(userId);
+
             await _handshakeService.Add(handshakeModel);
+
+            await SendOrderRequest($"{{\"recipient\": \"{username}\"," +
+                                     $" \"message\": \"You've just accepted a goods request. You will be contacted by the refugee.\"}}");
+            await SendOrderRequest($"{{\"recipient\": \"{refugee.Username}\"," +
+                                      $"\"message\": \"Your goods request has been accepted. You can contact your helper at {username} or {helper.Phone}\"}}");
+
             return await _goodsRequestService.Update(goodsRequestModel);
         }
 

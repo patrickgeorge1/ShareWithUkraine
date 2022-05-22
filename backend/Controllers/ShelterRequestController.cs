@@ -13,6 +13,8 @@ using System;
 using System.Text;
 using System.Text.Json;
 using System.Collections.Generic;
+using Confluent.Kafka;
+using System.Net;
 
 namespace Backend.Controllers
 {
@@ -113,7 +115,15 @@ namespace Backend.Controllers
                 RequestType = "ShelterRequest",
                 RequestId = requestId
             };
+            var refugee = await _userService.Get(shelterRequestModel.RefugeeId);
+            var helper = await _userService.Get(userId);
+
             await _handshakeService.Add(handshakeModel);
+
+            await SendOrderRequest($"{{\"recipient\": \"{username}\"," +
+                                     $" \"message\": \"You've just accepted a shelter request. You will be contacted by the refugee.\"}}");
+            await SendOrderRequest($"{{\"recipient\": \"{refugee.Username}\"," +
+                                      $"\"message\": \"Your shelter request has been accepted. You can contact your helper at {username} or {helper.Phone}\"}}");
             return await _shelterRequestService.Update(shelterRequestModel);
         }
 
@@ -154,6 +164,36 @@ namespace Backend.Controllers
             var request = await _shelterRequestService.Get(id);
             await _shelterRequestService.Delete(id);
             return request;
+        }
+
+        private async Task<bool> SendOrderRequest(string message)
+        {
+            ProducerConfig config = new ProducerConfig
+            {
+                BootstrapServers = "broker:9092",
+                ClientId = Dns.GetHostName()
+            };
+
+            try
+            {
+                using (var producer = new ProducerBuilder
+                <Null, string>(config).Build())
+                {
+                    var result = await producer.ProduceAsync
+                    ("email-tasks", new Message<Null, string>
+                    {
+                        Value = message
+                    });
+
+                    return await Task.FromResult(true);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error occured: {ex.Message}");
+            }
+
+            return await Task.FromResult(false);
         }
     }
 }
